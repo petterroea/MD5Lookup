@@ -1,0 +1,37 @@
+MD5Lookup protocol version 1.0 - Used since MD5Lookup 1.0
+
+First, please note that everything here is big endian.
+
+Every packet starts with a header containing 2 things: a signed(fuck java) int, that contains the length of the packet including the 4 byte, and a byte that specifies the packet id.
+The rest of the packet is n-4 bytes long, where n is the integer read from the first 4 bytes. Following is list of packets, use, and data contents:
+
+0x00 - Handshake
+
+Data: 1 integer. This is the amount of wanted blocks.
+This packet is sendt by the client to the server to say hello. After this is sendt to the server, a 0x01 Handshake accepted message will be returned.
+
+0x01 - Handshake accepted
+
+Data: 8byte number(long), id used to identify the peer. 2 integers, offset(from 0) and size of block the client will be handling.
+
+This packet is sendt by the server to the client to welcome it.
+
+0x02 - Login
+
+Data: 8byte number(long), the id it got from the server.
+
+This packet is sendt by the client to the server instead of the handshake if the client allready has login data.
+
+0x03 - Login accept
+
+Data: Nothing
+
+0x04 - Keepalive
+
+Sendt every 10 minutes to keep the connection alive. Computer is marked as offline at 20 minutes.
+
+0x05 - MD5 query
+
+Data: 8 byte md5 hash
+
+Sendt from server to client. When client sends to server, the data is the bytes that equals the MD5 hash the server asks for, if the client hjas the answer to such hash.
